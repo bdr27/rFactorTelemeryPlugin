@@ -116,6 +116,7 @@ void ExampleInternalsPlugin::EndSession()
 
 void ExampleInternalsPlugin::EnterRealtime()
 {
+	telemetrySocket->Send("UpdateScreen=true\n");
   // start up timer every time we enter realtime
   mET = 0.0f;
 }
@@ -123,6 +124,7 @@ void ExampleInternalsPlugin::EnterRealtime()
 
 void ExampleInternalsPlugin::ExitRealtime()
 {
+	telemetrySocket->Send("UpdateScreen=false\n");
 }
 
 float telemUpdateInterval = 0.1f;
@@ -144,6 +146,9 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 	sprintf_s(sendBuf, "RPM=%.0f\n",info.mEngineRPM);
 	telemetrySocket->Send(sendBuf);
 	sprintf_s(sendBuf, "MaxRPM=%.0f\n",info.mEngineMaxRPM);
+	
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "Gear=%d\n", info.mGear);
 	telemetrySocket->Send(sendBuf);
 	sprintf_s(sendBuf, "Water=%.2f\nOil=%.2f\n", info.mEngineWaterTemp, info.mEngineOilTemp );
 	telemetrySocket->Send(sendBuf);
