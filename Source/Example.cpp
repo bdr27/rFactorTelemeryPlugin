@@ -26,6 +26,8 @@ unsigned g_uPluginID          = 0;
 char     g_szPluginName[]     = "bdr27Telemetry - 2013.03.04";
 unsigned g_uPluginVersion     = 001;
 unsigned g_uPluginObjectCount = 1;
+bool rpmSet = false;
+bool updateTel = false;
 TcpSocket* telemetrySocket;
 
 InternalsPluginInfo g_PluginInfo;
@@ -116,6 +118,7 @@ void ExampleInternalsPlugin::EndSession()
 
 void ExampleInternalsPlugin::EnterRealtime()
 {
+	updateTel = true;
 	telemetrySocket->Send("UpdateScreen=true\n");
   // start up timer every time we enter realtime
   mET = 0.0f;
@@ -125,6 +128,8 @@ void ExampleInternalsPlugin::EnterRealtime()
 void ExampleInternalsPlugin::ExitRealtime()
 {
 	telemetrySocket->Send("UpdateScreen=false\n");
+	rpmSet = false;
+	updateTel = false;
 }
 
 float telemUpdateInterval = 0.1f;
@@ -132,19 +137,41 @@ float timeSinceLastUpdate = 0.0f;
 
 void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 {
+	if(updateTel)
+	{
 	if(timeSinceLastUpdate < telemUpdateInterval){
 		timeSinceLastUpdate += info.mDeltaTime ;
 		return;
 	}
+	char sendBuf[64];
 	timeSinceLastUpdate = 0.0f;
+	sprintf_s(sendBuf, "Clutch,%.0f\n" + info.mClutchRPM);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "Delta,%.5f\n" + info.mDeltaTime);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "Dent," + info.mDentSeverity);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "Detatched," + info.mDetached);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "MaxRPM,%.0f\n" + info.mEngineMaxRPM);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "OilTemp,%.2f\n" + info.mEngineOilTemp);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "EnginRPM,%.0f\n" + info.mEngineRPM);
+	telemetrySocket->Send(sendBuf);
+
+	/*timeSinceLastUpdate = 0.0f;
 	const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
                                       ( info.mLocalVel.y * info.mLocalVel.y ) +
                                       ( info.mLocalVel.z * info.mLocalVel.z ) );
 	char sendBuf[64];
 	sprintf_s(sendBuf, "Speed=%.0f\n",metersPerSec * 3.6f);
 	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "RPM=%.0f\n",info.mEngineRPM);
-	telemetrySocket->Send(sendBuf);
+	if(!rpmSet){
+		sprintf_s(sendBuf, "RPM=%.0f\n",info.mEngineRPM);
+		telemetrySocket->Send(sendBuf);
+		rpmSet = true;
+	}
 	sprintf_s(sendBuf, "MaxRPM=%.0f\n",info.mEngineMaxRPM);
 	
 	telemetrySocket->Send(sendBuf);
@@ -154,8 +181,11 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 	telemetrySocket->Send(sendBuf);
 	sprintf_s(sendBuf, "Fuel=%.2f\n", info.mFuel);
 	telemetrySocket->Send(sendBuf);
-}
+	*/
 
+
+	}
+}
 
 void ExampleInternalsPlugin::UpdateGraphics( const GraphicsInfoV2 &info )
 {
