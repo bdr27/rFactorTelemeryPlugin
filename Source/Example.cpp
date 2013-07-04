@@ -159,6 +159,17 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 	telemetrySocket->Send(sendBuf);
 	sprintf_s(sendBuf, "EnginRPM,%.0f\n" + info.mEngineRPM);
 	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "WaterTemp,%.0f\n" + info.mEngineWaterTemp);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "Fuel,%.0f\n" + info.mFuel);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "Gear,%.0f\n" + info.mGear);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "LapNumber,%.0f\n" + info.mLapNumber);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "LapStart,%.0f\n" + info.mLapStartET);
+	telemetrySocket->Send(sendBuf);
+	sprintf_s(sendBuf, "LastImpact,%.0f\n" + info.mLastImpactET);
 
 	/*timeSinceLastUpdate = 0.0f;
 	const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
