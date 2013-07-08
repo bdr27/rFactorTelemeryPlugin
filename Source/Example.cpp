@@ -170,6 +170,7 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 	sprintf_s(sendBuf, "LapStart,%.0f\n" + info.mLapStartET);
 	telemetrySocket->Send(sendBuf);
 	sprintf_s(sendBuf, "LastImpact,%.0f\n" + info.mLastImpactET);
+	telemetryScoket->Send(sendBuf);
 
 	/*timeSinceLastUpdate = 0.0f;
 	const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
