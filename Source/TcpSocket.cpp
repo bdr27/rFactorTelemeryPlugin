@@ -2,8 +2,10 @@
 
 #include <iostream>
 
-using namespace std;
 
+/*
+* Socket should mostly be 127.0.0.1 and then be handled by the Java server
+*/
 TcpSocket::TcpSocket(const char* host, int port) 
     : mHost(host), mPort(port)
 {
@@ -17,7 +19,7 @@ TcpSocket::~TcpSocket(void)
 /*
 * Handles the setup of the socket
 */
-void TcpSocket::Open()
+void TcpSocket::open()
 {
 	iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
     if (iResult != NO_ERROR) {
@@ -52,7 +54,7 @@ void TcpSocket::Open()
   }    
 }
 
-void TcpSocket::Close()
+void TcpSocket::close()
 {
 	// shutdown the connection since no more data will be sent
     iResult = shutdown(ConnectSocket, SD_SEND);
@@ -66,7 +68,7 @@ void TcpSocket::Close()
     WSACleanup();
 }
 
-void TcpSocket::Send(char *str)
+void TcpSocket::tcpSend(char *str)
 {
 	iResult = send( ConnectSocket, str, (int)strlen(str), 0 );
 	if (iResult == SOCKET_ERROR) {
@@ -79,7 +81,15 @@ void TcpSocket::Send(char *str)
     printf("Bytes Sent: %d\n", iResult);
 }
 
-const char* TcpSocket::GetHost()
+void TcpSocket::tcpSend(string name, float value)
+{	
+	os << name << "=" << value << "\n";
+	string message = os.str();
+	char *buffer = (char *)message.c_str();
+	tcpSend(buffer);
+}
+
+const char* TcpSocket::getHost()
 {
 	return mHost;
 }

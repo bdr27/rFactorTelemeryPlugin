@@ -8,6 +8,9 @@
 #include <Ws2tcpip.h>
 #include <stdio.h>
 #include <iostream>
+#include <string>
+#include <sstream>
+using namespace std;
 #pragma comment(lib, "Ws2_32.lib")
 
 /**
@@ -19,12 +22,12 @@ public:
     TcpSocket(const char* host, int port);
     ~TcpSocket(void);
 
-    void Send(char *str);
+    void tcpSend(char *str);
+	void tcpSend(std::string str, float number);
 
-	void Connect();
-    void Open();
-    void Close();
-	const char* GetHost();
+    void open();
+    void close();
+	const char* getHost();
 private:
     const char* mHost;
     int mPort;
@@ -35,4 +38,6 @@ private:
 
 	SOCKET ConnectSocket;
 	struct sockaddr_in clientService; 
+
+	std::ostringstream os;
 };

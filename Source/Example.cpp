@@ -93,7 +93,7 @@ void ExampleInternalsPlugin::Startup()
   // Open ports, read configs, whatever you need to do.  For now, I'll just clear out the
   // example output data files.
 	telemetrySocket = new TcpSocket("127.0.0.1", 27015);
-	telemetrySocket->Open();
+	telemetrySocket->open();
 
   // default HW control enabled to true
   mEnabled = false;
@@ -102,7 +102,7 @@ void ExampleInternalsPlugin::Startup()
 
 void ExampleInternalsPlugin::Shutdown()
 {
-	telemetrySocket->Close();
+	telemetrySocket->close();
 }
 
 
@@ -119,7 +119,7 @@ void ExampleInternalsPlugin::EndSession()
 void ExampleInternalsPlugin::EnterRealtime()
 {
 	updateTel = true;
-	telemetrySocket->Send("UpdateScreen=true\n");
+	telemetrySocket->tcpSend("UpdateScreen=true\n");
   // start up timer every time we enter realtime
   mET = 0.0f;
 }
@@ -127,7 +127,7 @@ void ExampleInternalsPlugin::EnterRealtime()
 
 void ExampleInternalsPlugin::ExitRealtime()
 {
-	telemetrySocket->Send("UpdateScreen=false\n");
+	telemetrySocket->tcpSend("UpdateScreen=false\n");
 	rpmSet = false;
 	updateTel = false;
 }
@@ -145,32 +145,32 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 	}
 	char sendBuf[64];
 	timeSinceLastUpdate = 0.0f;
-	sprintf_s(sendBuf, "Clutch,%.0f\n" + info.mClutchRPM);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Delta,%.5f\n" + info.mDeltaTime);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Dent," + info.mDentSeverity);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Detatched," + info.mDetached);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "MaxRPM,%.0f\n" + info.mEngineMaxRPM);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "OilTemp,%.2f\n" + info.mEngineOilTemp);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "EnginRPM,%.0f\n" + info.mEngineRPM);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "WaterTemp,%.0f\n" + info.mEngineWaterTemp);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Fuel,%.0f\n" + info.mFuel);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Gear,%.0f\n" + info.mGear);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "LapNumber,%.0f\n" + info.mLapNumber);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "LapStart,%.0f\n" + info.mLapStartET);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "LastImpact,%.0f\n" + info.mLastImpactET);
-	telemetryScoket->Send(sendBuf);
+	sprintf_s(sendBuf, "Clutch,%.0f\n", info.mClutchRPM);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "Delta,%.5f\n" , info.mDeltaTime);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "Dent," , info.mDentSeverity);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "Detatched," , info.mDetached);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "MaxRPM,%.0f\n" , info.mEngineMaxRPM);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "OilTemp,%.2f\n" , info.mEngineOilTemp);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "EnginRPM,%.0f\n" , info.mEngineRPM);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "WaterTemp,%.0f\n" , info.mEngineWaterTemp);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "Fuel,%.0f\n" , info.mFuel);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "Gear,%.0f\n" , info.mGear);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "LapNumber,%.0f\n" , info.mLapNumber);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "LapStart,%.0f\n" , info.mLapStartET);
+	telemetrySocket->tcpSend(sendBuf);
+	sprintf_s(sendBuf, "LastImpact,%.0f\n" , info.mLastImpactET);
+	telemetrySocket->tcpSend(sendBuf);
 
 	/*timeSinceLastUpdate = 0.0f;
 	const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
