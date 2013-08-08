@@ -83,10 +83,15 @@ void TcpSocket::tcpSend(char *str)
 
 void TcpSocket::tcpSend(string name, float value)
 {	
-	os << name << "=" << value << "\n";
-	string message = os.str();
+	string message = addFloatString(name, value);
 	char *buffer = (char *)message.c_str();
 	tcpSend(buffer);
+}
+
+string TcpSocket::addFloatString(string str, float fl)
+{
+	os << str << "=" << fl << "\n";
+	return os.str();
 }
 
 const char* TcpSocket::getHost()

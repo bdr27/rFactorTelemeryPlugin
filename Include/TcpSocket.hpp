@@ -29,6 +29,7 @@ public:
     void close();
 	const char* getHost();
 private:
+	string addFloatString(string str, float fl);
     const char* mHost;
     int mPort;
 

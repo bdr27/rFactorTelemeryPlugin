@@ -92,7 +92,7 @@ void ExampleInternalsPlugin::Startup()
 	
   // Open ports, read configs, whatever you need to do.  For now, I'll just clear out the
   // example output data files.
-	telemetrySocket = new TcpSocket("127.0.0.1", 27015);
+	telemetrySocket = new TcpSocket("127.0.0.1", 50000);
 	telemetrySocket->open();
 
   // default HW control enabled to true
