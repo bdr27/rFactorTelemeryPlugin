@@ -1,4 +1,4 @@
-#include "TcpSocket.hpp"
+#include "../Include/TcpSocket.hpp"
 
 #include <iostream>
 
@@ -81,6 +81,7 @@ void TcpSocket::tcpSend(char *str)
     printf("Bytes Sent: %d\n", iResult);
 }
 
+//turns message to char* with float
 void TcpSocket::tcpSend(string name, float value)
 {	
 	string message = addFloatString(name, value);
@@ -88,9 +89,37 @@ void TcpSocket::tcpSend(string name, float value)
 	tcpSend(buffer);
 }
 
+//turns message to char* with string
+void TcpSocket::tcpSend(string str, string value)
+{
+	string message = addStringtoString(str, value);
+	char *buffer = (char *) message.c_str();
+	tcpSend(buffer);
+}
+
+//turns message to char* with long
+void TcpSocket::tcpSend(string str, long value)
+{
+	string message = addLongToString(str, value);
+	char *buffer = (char *) message.c_str();
+	tcpSend(buffer);
+}
+
 string TcpSocket::addFloatString(string str, float fl)
 {
 	os << str << "=" << fl << "\n";
+	return os.str();
+}
+
+string TcpSocket::addStringtoString(string str, string value)
+{
+	os << str << "=" << value << "\n";
+	return os.str();
+}
+
+string TcpSocket::addLongToString(string str, long value)
+{
+	os << str << "=" << value << "\n";
 	return os.str();
 }
 

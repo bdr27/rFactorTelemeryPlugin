@@ -23,13 +23,17 @@ public:
     ~TcpSocket(void);
 
     void tcpSend(char *str);
-	void tcpSend(std::string str, float number);
+	void tcpSend(string str, float number);
+	void tcpSend(string str, string value);
+	void tcpSend(string str, long number);
 
     void open();
     void close();
 	const char* getHost();
 private:
-	string addFloatString(string str, float fl);
+	string addFloatString(string str, float value);
+	string addStringtoString(string str, string value);
+	string addLongToString(string str, long value);
     const char* mHost;
     int mPort;
 

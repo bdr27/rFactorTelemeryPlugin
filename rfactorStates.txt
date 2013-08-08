@@ -1,0 +1,63 @@
+System Settings - 0
+
+Time - 1
+	Delta - 0
+	mLapNumber - 1
+	mLapStartET - 2
+	mVehicleName - 3
+	mTrackName - 4
+	
+Position - 2
+	mPos - 0
+	mLocalVel - 1
+	mLocalAccel - 2
+
+Orientation - 3
+	mOriX - 0
+	mOriY - 1
+	mOriZ - 2
+	mLocalRot - 3
+	mLocalRotAccel - 4	
+
+Vehicle status - 4
+	mGear - 0
+	mEngineRPM - 1
+	mEngineWaterTemp - 2
+	mEngineOilTemp - 3
+	mClutchRPM - 4
+	mFuel - 5
+	mEngineMaxRPM - 6
+	mSchedualedStops - 7
+
+Driver input - 5
+	mUnfilteredThrottle - 0
+	mUnfilteredBrake - 1
+	mUnfilteredSteering - 2
+	mUnfilteredClutch - 3
+	
+Misc - 6
+	mSteeringArmForce - 0
+
+State/Damage - 7
+	mOverheating - 0
+	mDetached - 1
+	mDentSeverity - 2 [0-7]
+	mLastImpaceET - 3
+	mLastImpactMagnitude - 4
+	mLastImpactPos - 5
+
+Wheel - 8 [0-3]
+	mRotation - 0
+	mSuspensionDeflection - 1
+	mRideHeight - 2
+	mTireLoad - 3
+	mLateralForce - 4
+	mGripFract - 5
+	mBrakeTemp - 6
+	mPressure - 7
+	mTemperature - 8 [0-2]
+	mWear - 9
+	mTerrainName - 10
+	mSurfaceType - 11
+	mFlat - 12
+	mDetached - 13

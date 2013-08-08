@@ -16,7 +16,7 @@
 //Ý                                                                         Þ
 //ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
 
-#include "Example.hpp"          // corresponding header file
+#include "../Include/Example.hpp"          // corresponding header file
 #include <math.h>               // for atan2, sqrt
 #include <stdio.h>              // for sample output
 
@@ -28,6 +28,9 @@ unsigned g_uPluginVersion     = 001;
 unsigned g_uPluginObjectCount = 1;
 bool rpmSet = false;
 bool updateTel = false;
+bool sendOneTime = true;
+long lapNumber = 0;
+
 TcpSocket* telemetrySocket;
 
 InternalsPluginInfo g_PluginInfo;
@@ -61,7 +64,7 @@ PluginObjectInfo* __cdecl GetPluginObjectInfo( const unsigned uIndex )
 InternalsPluginInfo::InternalsPluginInfo()
 {
   // put together a name for this plugin
-  sprintf( m_szFullName, "%s - %s", g_szPluginName, InternalsPluginInfo::GetName() );
+  sprintf_s( m_szFullName, "%s - %s", g_szPluginName, InternalsPluginInfo::GetName() );
 }
 
 const char*    InternalsPluginInfo::GetName()     const { return ExampleInternalsPlugin::GetName(); }
@@ -118,10 +121,11 @@ void ExampleInternalsPlugin::EndSession()
 
 void ExampleInternalsPlugin::EnterRealtime()
 {
+	//Need to add if socket has failed try to reconnect when entering real time
 	updateTel = true;
 	telemetrySocket->tcpSend("UpdateScreen=true\n");
-  // start up timer every time we enter realtime
-  mET = 0.0f;
+	// start up timer every time we enter realtime
+	mET = 0.0f;
 }
 
 
@@ -130,6 +134,7 @@ void ExampleInternalsPlugin::ExitRealtime()
 	telemetrySocket->tcpSend("UpdateScreen=false\n");
 	rpmSet = false;
 	updateTel = false;
+	sendOneTime = true;
 }
 
 float telemUpdateInterval = 0.1f;
@@ -139,13 +144,53 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 {
 	if(updateTel)
 	{
-	if(timeSinceLastUpdate < telemUpdateInterval){
-		timeSinceLastUpdate += info.mDeltaTime ;
-		return;
-	}
-	char sendBuf[64];
+		if(timeSinceLastUpdate < telemUpdateInterval){
+			timeSinceLastUpdate += info.mDeltaTime ;
+			return;
+		}
+
+		//Values that only need to be send once
+		if(sendOneTime)
+		{
+			//Time Info
+			telemetrySocket->tcpSend("1,3", info.mVehicleName);
+			telemetrySocket->tcpSend("1,4", info.mTrackName);
+
+			//Vehicle Status
+			telemetrySocket->tcpSend("4,6", info.mEngineMaxRPM);
+			//telemetrySocket->tcpSend("4,7", info.mScheduledStops);
+			sendOneTime = false;
+		}
+
+		//Send Once Per Lap
+		if(lapNumber != info.mLapNumber)
+		{
+			telemetrySocket->tcpSend("1,1", info.mLapNumber);
+			telemetrySocket->tcpSend("1,2", info.mLapStartET);
+			lapNumber = info.mLapNumber;
+		}
+
+		//Send time info
+		telemetrySocket->tcpSend("1,0", info.mDeltaTime);
+
+		//Send Vehicle Status
+		telemetrySocket->tcpSend("4,0", info.mGear);
+		telemetrySocket->tcpSend("4,1", info.mEngineRPM);
+		telemetrySocket->tcpSend("4,2", info.mEngineWaterTemp);
+		telemetrySocket->tcpSend("4,3", info.mEngineOilTemp);
+		telemetrySocket->tcpSend("4,4", info.mClutchRPM);
+		telemetrySocket->tcpSend("4,5", info.mFuel);
+		
+
+	
+	//Send Time info
+	//telemetrySocket->tcpSend("0,0", info.mDeltaTime);
+
+//	telemetrySocket->tcpSend("Clutch", info.mClutchRPM);
+//	telemetrySocket->tcpSend("Delta", info.mDeltaTime);
+	//char sendBuf[64];
 	timeSinceLastUpdate = 0.0f;
-	sprintf_s(sendBuf, "Clutch,%.0f\n", info.mClutchRPM);
+	/*sprintf_s(sendBuf, "Clutch,%.0f\n", info.mClutchRPM);
 	telemetrySocket->tcpSend(sendBuf);
 	sprintf_s(sendBuf, "Delta,%.5f\n" , info.mDeltaTime);
 	telemetrySocket->tcpSend(sendBuf);
@@ -172,7 +217,7 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 	sprintf_s(sendBuf, "LastImpact,%.0f\n" , info.mLastImpactET);
 	telemetrySocket->tcpSend(sendBuf);
 
-	/*timeSinceLastUpdate = 0.0f;
+	timeSinceLastUpdate = 0.0f;
 	const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
                                       ( info.mLocalVel.y * info.mLocalVel.y ) +
                                       ( info.mLocalVel.z * info.mLocalVel.z ) );
