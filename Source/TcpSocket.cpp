@@ -82,17 +82,17 @@ void TcpSocket::tcpSend(char *str)
 }
 
 //turns message to char* with float
-void TcpSocket::tcpSend(string name, float value)
+void TcpSocket::tcpSend(string str, float value)
 {	
-	string message = addFloatString(name, value);
-	char *buffer = (char *)message.c_str();
+	string message = str + "=" + to_string(value) + "\n";
+	char *buffer = (char *) message.c_str();
 	tcpSend(buffer);
 }
 
 //turns message to char* with string
 void TcpSocket::tcpSend(string str, string value)
 {
-	string message = addStringtoString(str, value);
+	string message = str + "=" + value + "\n";
 	char *buffer = (char *) message.c_str();
 	tcpSend(buffer);
 }
@@ -100,28 +100,26 @@ void TcpSocket::tcpSend(string str, string value)
 //turns message to char* with long
 void TcpSocket::tcpSend(string str, long value)
 {
-	string message = addLongToString(str, value);
+	string message = str + "=" + to_string(value) + "\n";
+	char *buffer = (char *) message.c_str();;
+	tcpSend(buffer);
+}
+
+void TcpSocket::tcpSend(string str,unsigned char value)
+{
+	string message = str + "=" + to_string(value) + "\n";
 	char *buffer = (char *) message.c_str();
 	tcpSend(buffer);
 }
 
-string TcpSocket::addFloatString(string str, float fl)
+/*
+void TcpSocket::tcpSend(string str, const bool value)
 {
-	os << str << "=" << fl << "\n";
-	return os.str();
+	string message = str + "=" + to_string(value) + "\n";
+	char *buffer = (char *) message.c_str();
+	tcpSend(buffer);
 }
-
-string TcpSocket::addStringtoString(string str, string value)
-{
-	os << str << "=" << value << "\n";
-	return os.str();
-}
-
-string TcpSocket::addLongToString(string str, long value)
-{
-	os << str << "=" << value << "\n";
-	return os.str();
-}
+*/
 
 const char* TcpSocket::getHost()
 {

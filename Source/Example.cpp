@@ -158,7 +158,7 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 
 			//Vehicle Status
 			telemetrySocket->tcpSend("4,6", info.mEngineMaxRPM);
-			//telemetrySocket->tcpSend("4,7", info.mScheduledStops);
+			telemetrySocket->tcpSend("4,7", info.mScheduledStops);
 			sendOneTime = false;
 		}
 
@@ -173,6 +173,34 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		//Send time info
 		telemetrySocket->tcpSend("1,0", info.mDeltaTime);
 
+		//Position info
+		telemetrySocket->tcpSend("2,0,0", info.mPos.x);
+		telemetrySocket->tcpSend("2,0,1", info.mPos.y);
+		telemetrySocket->tcpSend("2,0,2", info.mPos.z);
+		telemetrySocket->tcpSend("2,1,0", info.mLocalVel.x);
+		telemetrySocket->tcpSend("2,1,1", info.mLocalVel.y);
+		telemetrySocket->tcpSend("2,1,2", info.mLocalVel.z);
+		telemetrySocket->tcpSend("2,2,0", info.mLocalAccel.x);
+		telemetrySocket->tcpSend("2,2,1", info.mLocalAccel.y);
+		telemetrySocket->tcpSend("2,2,2", info.mLocalAccel.z);
+
+		//Orientation info
+		telemetrySocket->tcpSend("3,0,0", info.mOriX.x);
+		telemetrySocket->tcpSend("3,0,1", info.mOriX.y);
+		telemetrySocket->tcpSend("3,0,2", info.mOriX.z);
+		telemetrySocket->tcpSend("3,1,0", info.mOriY.x);
+		telemetrySocket->tcpSend("3,1,1", info.mOriY.y);
+		telemetrySocket->tcpSend("3,1,2", info.mOriY.z);
+		telemetrySocket->tcpSend("3,2,0", info.mOriZ.x);
+		telemetrySocket->tcpSend("3,2,1", info.mOriZ.y);
+		telemetrySocket->tcpSend("3,2,2", info.mOriZ.z);
+		telemetrySocket->tcpSend("3,3,0", info.mLocalRot.x);
+		telemetrySocket->tcpSend("3,3,1", info.mLocalRot.y);
+		telemetrySocket->tcpSend("3,3,2", info.mLocalRot.z);
+		telemetrySocket->tcpSend("3,4,0", info.mLocalRotAccel.x);
+		telemetrySocket->tcpSend("3,4,1", info.mLocalRotAccel.y);
+		telemetrySocket->tcpSend("3,4,2", info.mLocalRotAccel.z);
+
 		//Send Vehicle Status
 		telemetrySocket->tcpSend("4,0", info.mGear);
 		telemetrySocket->tcpSend("4,1", info.mEngineRPM);
@@ -180,65 +208,31 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		telemetrySocket->tcpSend("4,3", info.mEngineOilTemp);
 		telemetrySocket->tcpSend("4,4", info.mClutchRPM);
 		telemetrySocket->tcpSend("4,5", info.mFuel);
-		
 
+		//Driver Input
+		telemetrySocket->tcpSend("5,0", info.mUnfilteredThrottle);
+		telemetrySocket->tcpSend("5,1", info.mUnfilteredBrake);
+		telemetrySocket->tcpSend("5,2", info.mUnfilteredSteering);
+		telemetrySocket->tcpSend("5,3", info.mUnfilteredClutch);
+
+		//Misc
+		telemetrySocket->tcpSend("6,0", info.mSteeringArmForce);
+
+		//State / Damage
+	//	telemetrySocket->tcpSend("7,0", info.mOverheating);
+//		telemetrySocket->tcpSend("7,1", info.mDetached);
+		telemetrySocket->tcpSend("7,3", info.mLastImpactET);
+		telemetrySocket->tcpSend("7,4", info.mLastImpactMagnitude);
+		telemetrySocket->tcpSend("7,5,0", info.mLastImpactPos.x);
+		telemetrySocket->tcpSend("7,5,1", info.mLastImpactPos.y);
+		telemetrySocket->tcpSend("7,5,2", info.mLastImpactPos.z);
 	
-	//Send Time info
-	//telemetrySocket->tcpSend("0,0", info.mDeltaTime);
-
-//	telemetrySocket->tcpSend("Clutch", info.mClutchRPM);
-//	telemetrySocket->tcpSend("Delta", info.mDeltaTime);
-	//char sendBuf[64];
-	timeSinceLastUpdate = 0.0f;
-	/*sprintf_s(sendBuf, "Clutch,%.0f\n", info.mClutchRPM);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "Delta,%.5f\n" , info.mDeltaTime);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "Dent," , info.mDentSeverity);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "Detatched," , info.mDetached);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "MaxRPM,%.0f\n" , info.mEngineMaxRPM);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "OilTemp,%.2f\n" , info.mEngineOilTemp);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "EnginRPM,%.0f\n" , info.mEngineRPM);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "WaterTemp,%.0f\n" , info.mEngineWaterTemp);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "Fuel,%.0f\n" , info.mFuel);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "Gear,%.0f\n" , info.mGear);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "LapNumber,%.0f\n" , info.mLapNumber);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "LapStart,%.0f\n" , info.mLapStartET);
-	telemetrySocket->tcpSend(sendBuf);
-	sprintf_s(sendBuf, "LastImpact,%.0f\n" , info.mLastImpactET);
-	telemetrySocket->tcpSend(sendBuf);
-
-	timeSinceLastUpdate = 0.0f;
-	const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
+		timeSinceLastUpdate = 0.0f;
+	
+		/*const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
                                       ( info.mLocalVel.y * info.mLocalVel.y ) +
-                                      ( info.mLocalVel.z * info.mLocalVel.z ) );
-	char sendBuf[64];
-	sprintf_s(sendBuf, "Speed=%.0f\n",metersPerSec * 3.6f);
-	telemetrySocket->Send(sendBuf);
-	if(!rpmSet){
-		sprintf_s(sendBuf, "RPM=%.0f\n",info.mEngineRPM);
-		telemetrySocket->Send(sendBuf);
-		rpmSet = true;
-	}
-	sprintf_s(sendBuf, "MaxRPM=%.0f\n",info.mEngineMaxRPM);
-	
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Gear=%d\n", info.mGear);
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Water=%.2f\nOil=%.2f\n", info.mEngineWaterTemp, info.mEngineOilTemp );
-	telemetrySocket->Send(sendBuf);
-	sprintf_s(sendBuf, "Fuel=%.2f\n", info.mFuel);
-	telemetrySocket->Send(sendBuf);
-	*/
+                                      ( info.mLocalVel.z * info.mLocalVel.z ) );	
+		*/
 
 
 	}

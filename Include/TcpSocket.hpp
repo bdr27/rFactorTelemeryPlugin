@@ -23,17 +23,16 @@ public:
     ~TcpSocket(void);
 
     void tcpSend(char *str);
-	void tcpSend(string str, float number);
+	void tcpSend(string str, float value);
 	void tcpSend(string str, string value);
-	void tcpSend(string str, long number);
+	void tcpSend(string str, long value);
+	void tcpSend(string str, unsigned char value);
+	//void tcpSend(string str, const bool value);
 
     void open();
     void close();
 	const char* getHost();
 private:
-	string addFloatString(string str, float value);
-	string addStringtoString(string str, string value);
-	string addLongToString(string str, long value);
     const char* mHost;
     int mPort;
 
