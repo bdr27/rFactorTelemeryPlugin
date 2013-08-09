@@ -105,21 +105,12 @@ void TcpSocket::tcpSend(string str, long value)
 	tcpSend(buffer);
 }
 
-void TcpSocket::tcpSend(string str,unsigned char value)
+void TcpSocket::tcpSend(string str, unsigned char value)
 {
 	string message = str + "=" + to_string(value) + "\n";
 	char *buffer = (char *) message.c_str();
 	tcpSend(buffer);
 }
-
-/*
-void TcpSocket::tcpSend(string str, const bool value)
-{
-	string message = str + "=" + to_string(value) + "\n";
-	char *buffer = (char *) message.c_str();
-	tcpSend(buffer);
-}
-*/
 
 const char* TcpSocket::getHost()
 {

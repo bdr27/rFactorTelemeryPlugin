@@ -2,10 +2,10 @@ System Settings - 0
 
 Time - 1
 	Delta - 0
-	mLapNumber - 1
-	mLapStartET - 2
-	mVehicleName - 3
-	mTrackName - 4
+	mLapNumber - 1 //Sent Once Per Lap
+	mLapStartET - 2 //Sent Once Per Lap
+	mVehicleName - 3 //Sent Once
+	mTrackName - 4 //Sent Once
 	
 Position - 2
 	mPos - 0
@@ -26,8 +26,9 @@ Vehicle status - 4
 	mEngineOilTemp - 3
 	mClutchRPM - 4
 	mFuel - 5
-	mEngineMaxRPM - 6
-	mSchedualedStops - 7
+	mEngineMaxRPM - 6 //Sent Once
+	mSchedualedStops - 7 //Sent Once
+	metersPerSec - 8
 
 Driver input - 5
 	mUnfilteredThrottle - 0

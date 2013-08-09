@@ -27,7 +27,6 @@ public:
 	void tcpSend(string str, string value);
 	void tcpSend(string str, long value);
 	void tcpSend(string str, unsigned char value);
-	//void tcpSend(string str, const bool value);
 
     void open();
     void close();

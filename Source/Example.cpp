@@ -121,7 +121,7 @@ void ExampleInternalsPlugin::EndSession()
 
 void ExampleInternalsPlugin::EnterRealtime()
 {
-	//Need to add if socket has failed try to reconnect when entering real time
+	//Need to change the socket setup to each time you enter and exit real time
 	updateTel = true;
 	telemetrySocket->tcpSend("UpdateScreen=true\n");
 	// start up timer every time we enter realtime
@@ -208,6 +208,10 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		telemetrySocket->tcpSend("4,3", info.mEngineOilTemp);
 		telemetrySocket->tcpSend("4,4", info.mClutchRPM);
 		telemetrySocket->tcpSend("4,5", info.mFuel);
+		const float metersPerSec = sqrtf( ( info.mLocalVel.x * info.mLocalVel.x ) +
+                                      ( info.mLocalVel.y * info.mLocalVel.y ) +
+                                      ( info.mLocalVel.z * info.mLocalVel.z ) );
+		telemetrySocket->tcpSend("4,8", metersPerSec);
 
 		//Driver Input
 		telemetrySocket->tcpSend("5,0", info.mUnfilteredThrottle);
@@ -219,13 +223,41 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		telemetrySocket->tcpSend("6,0", info.mSteeringArmForce);
 
 		//State / Damage
-	//	telemetrySocket->tcpSend("7,0", info.mOverheating);
-//		telemetrySocket->tcpSend("7,1", info.mDetached);
+		telemetrySocket->tcpSend("7,0", (long) info.mOverheating);
+		telemetrySocket->tcpSend("7,1", (long) info.mDetached);
+		for(int i = 0; i < 8; i++)
+		{
+			telemetrySocket->tcpSend(("7,2," + to_string(i)), info.mDentSeverity[i]);
+		}
 		telemetrySocket->tcpSend("7,3", info.mLastImpactET);
 		telemetrySocket->tcpSend("7,4", info.mLastImpactMagnitude);
 		telemetrySocket->tcpSend("7,5,0", info.mLastImpactPos.x);
 		telemetrySocket->tcpSend("7,5,1", info.mLastImpactPos.y);
 		telemetrySocket->tcpSend("7,5,2", info.mLastImpactPos.z);
+
+		//Tire details
+		for(int i = 0; i < 4; i++)
+		{
+			TelemWheelV2 wheel = info.mWheel[i];
+			telemetrySocket->tcpSend(("8,0," + to_string(i)), wheel.mRotation);
+			telemetrySocket->tcpSend(("8,1," + to_string(i)), wheel.mSuspensionDeflection);
+			telemetrySocket->tcpSend(("8,2," + to_string(i)), wheel.mRideHeight);
+			telemetrySocket->tcpSend(("8,3," + to_string(i)), wheel.mTireLoad);
+			telemetrySocket->tcpSend(("8,4," + to_string(i)), wheel.mLateralForce);
+			telemetrySocket->tcpSend(("8,5," + to_string(i)), wheel.mGripFract);
+			telemetrySocket->tcpSend(("8,6," + to_string(i)), wheel.mBrakeTemp);
+			telemetrySocket->tcpSend(("8,7," + to_string(i)), wheel.mPressure);
+			for(int j = 0; j < 3; j++)
+			{
+				telemetrySocket->tcpSend(("8,8," + to_string(i) + "," + to_string(j)), wheel.mTemperature[j]);
+			}			
+			telemetrySocket->tcpSend(("8,9," + to_string(i)), wheel.mWear);
+			telemetrySocket->tcpSend(("8,10," + to_string(i)), wheel.mTerrainName);
+			telemetrySocket->tcpSend(("8,11," + to_string(i)), wheel.mSurfaceType);
+			telemetrySocket->tcpSend(("8,12," + to_string(i)), (long) wheel.mFlat);
+			telemetrySocket->tcpSend(("8,13," + to_string(i)), (long) wheel.mDetached);
+
+		}
 	
 		timeSinceLastUpdate = 0.0f;
 	
