@@ -152,13 +152,13 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		//Values that only need to be send once
 		if(sendOneTime)
 		{
-			//Time Info
-			telemetrySocket->tcpSend("1,3", info.mVehicleName);
-			telemetrySocket->tcpSend("1,4", info.mTrackName);
-
 			//Vehicle Status
 			telemetrySocket->tcpSend("4,6", info.mEngineMaxRPM);
 			telemetrySocket->tcpSend("4,7", info.mScheduledStops);
+
+			//Misc Info
+			telemetrySocket->tcpSend("6,1", info.mVehicleName);
+			telemetrySocket->tcpSend("6,2", info.mTrackName);
 			sendOneTime = false;
 		}
 
@@ -174,32 +174,16 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		telemetrySocket->tcpSend("1,0", info.mDeltaTime);
 
 		//Position info
-		telemetrySocket->tcpSend("2,0,0", info.mPos.x);
-		telemetrySocket->tcpSend("2,0,1", info.mPos.y);
-		telemetrySocket->tcpSend("2,0,2", info.mPos.z);
-		telemetrySocket->tcpSend("2,1,0", info.mLocalVel.x);
-		telemetrySocket->tcpSend("2,1,1", info.mLocalVel.y);
-		telemetrySocket->tcpSend("2,1,2", info.mLocalVel.z);
-		telemetrySocket->tcpSend("2,2,0", info.mLocalAccel.x);
-		telemetrySocket->tcpSend("2,2,1", info.mLocalAccel.y);
-		telemetrySocket->tcpSend("2,2,2", info.mLocalAccel.z);
+		telemetrySocket->tcpSend("2,0", info.mPos.x, info.mPos.y, info.mPos.z);
+		telemetrySocket->tcpSend("2,1", info.mLocalVel.x, info.mLocalVel.y, info.mLocalVel.z);
+		telemetrySocket->tcpSend("2,2", info.mLocalAccel.x, info.mLocalAccel.y, info.mLocalAccel.z);
 
 		//Orientation info
-		telemetrySocket->tcpSend("3,0,0", info.mOriX.x);
-		telemetrySocket->tcpSend("3,0,1", info.mOriX.y);
-		telemetrySocket->tcpSend("3,0,2", info.mOriX.z);
-		telemetrySocket->tcpSend("3,1,0", info.mOriY.x);
-		telemetrySocket->tcpSend("3,1,1", info.mOriY.y);
-		telemetrySocket->tcpSend("3,1,2", info.mOriY.z);
-		telemetrySocket->tcpSend("3,2,0", info.mOriZ.x);
-		telemetrySocket->tcpSend("3,2,1", info.mOriZ.y);
-		telemetrySocket->tcpSend("3,2,2", info.mOriZ.z);
-		telemetrySocket->tcpSend("3,3,0", info.mLocalRot.x);
-		telemetrySocket->tcpSend("3,3,1", info.mLocalRot.y);
-		telemetrySocket->tcpSend("3,3,2", info.mLocalRot.z);
-		telemetrySocket->tcpSend("3,4,0", info.mLocalRotAccel.x);
-		telemetrySocket->tcpSend("3,4,1", info.mLocalRotAccel.y);
-		telemetrySocket->tcpSend("3,4,2", info.mLocalRotAccel.z);
+		telemetrySocket->tcpSend("3,0", info.mOriX.x, info.mOriX.y, info.mOriX.z);
+		telemetrySocket->tcpSend("3,1", info.mOriY.x, info.mOriY.y, info.mOriY.z);
+		telemetrySocket->tcpSend("3,2", info.mOriZ.x, info.mOriZ.y, info.mOriZ.z);
+		telemetrySocket->tcpSend("3,3", info.mLocalRot.x, info.mLocalRot.y, info.mLocalRot.z);
+		telemetrySocket->tcpSend("3,4", info.mLocalRotAccel.x, info.mLocalRotAccel.y, info.mLocalRotAccel.z);
 
 		//Send Vehicle Status
 		telemetrySocket->tcpSend("4,0", info.mGear);
@@ -231,9 +215,7 @@ void ExampleInternalsPlugin::UpdateTelemetry( const TelemInfoV2 &info )
 		}
 		telemetrySocket->tcpSend("7,3", info.mLastImpactET);
 		telemetrySocket->tcpSend("7,4", info.mLastImpactMagnitude);
-		telemetrySocket->tcpSend("7,5,0", info.mLastImpactPos.x);
-		telemetrySocket->tcpSend("7,5,1", info.mLastImpactPos.y);
-		telemetrySocket->tcpSend("7,5,2", info.mLastImpactPos.z);
+		telemetrySocket->tcpSend("7,5", info.mLastImpactPos.x, info.mLastImpactPos.y, info.mLastImpactPos.z);
 
 		//Tire details
 		for(int i = 0; i < 4; i++)

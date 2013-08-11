@@ -89,6 +89,13 @@ void TcpSocket::tcpSend(string str, float value)
 	tcpSend(buffer);
 }
 
+void TcpSocket::tcpSend(string str, float x, float y, float z)
+{
+	string message = str + "=" + to_string(x) + "," + to_string(y) + "," + to_string(z) + "\n";
+	char *buffer = (char *) message.c_str();
+	tcpSend(buffer);
+}
+
 //turns message to char* with string
 void TcpSocket::tcpSend(string str, string value)
 {

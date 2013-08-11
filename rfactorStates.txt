@@ -4,8 +4,6 @@ Time - 1
 	Delta - 0
 	mLapNumber - 1 //Sent Once Per Lap
 	mLapStartET - 2 //Sent Once Per Lap
-	mVehicleName - 3 //Sent Once
-	mTrackName - 4 //Sent Once
 	
 Position - 2
 	mPos - 0
@@ -38,6 +36,8 @@ Driver input - 5
 	
 Misc - 6
 	mSteeringArmForce - 0
+	mVehicleName - 1 //Sent Once
+	mTrackName - 2 //Sent Once
 
 State/Damage - 7
 	mOverheating - 0

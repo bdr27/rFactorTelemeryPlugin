@@ -1,0 +1,7 @@
+KNOWN ISSUES
+
+Max engine RPM sent as 0.
+When entering a session and the previous session was paused while AI had control. Max Engine RPM will be sent as 0
+
+Brake does not seem to be sending the correct data.
+Brake temps are over 300 when starting

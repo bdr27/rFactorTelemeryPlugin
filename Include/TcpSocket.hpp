@@ -24,6 +24,7 @@ public:
 
     void tcpSend(char *str);
 	void tcpSend(string str, float value);
+	void tcpSend(string str, float x, float y, float z);
 	void tcpSend(string str, string value);
 	void tcpSend(string str, long value);
 	void tcpSend(string str, unsigned char value);
